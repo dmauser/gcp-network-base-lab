@@ -13,7 +13,7 @@ You are required to use GCP CLI (gcloud) by using either of these two options:
 1) Run commands using [GCP cloud shell](https://shell.cloud.google.com)
 2) Install GCP CLI (gcloud) on your Windows or Linux machine by following instructions: [Installing the gcloud CLI](https://cloud.google.com/sdk/docs/install)
 
-:point_right: Tip: When running on Linux elevate your shell to root (sudo -s).
+:point_right: Tip: When running on Linux elevate your shell to root (-s).
 
 ## Lab steps
 
@@ -107,15 +107,15 @@ gcloud compute vpn-tunnels describe $vpntunnelname \
 ## Clean up
 
 ```bash
-sudo gcloud compute vpn-tunnels delete $vpntunnelname --region $region --quiet
-sudo gcloud compute routes delete $vpntunnelname-route-1 --quiet
-sudo gcloud compute forwarding-rules delete $envname-vpn-rule-esp --region $region --quiet
-sudo gcloud compute forwarding-rules delete $envname-vpn-rule-udp500 --region $region --quiet
-sudo gcloud compute forwarding-rules delete $envname-vpn-rule-udp4500 --region $region --quiet
-sudo gcloud compute target-vpn-gateways delete $envname-vpn --region $region --quiet
-sudo gcloud compute addresses delete $envname-vpn-pip --region $region --quiet
-sudo gcloud compute instances delete $envname-vm1 --project=$project --zone=$zone --quiet
-sudo gcloud compute firewall-rules delete $envname-allow-traffic-from-azure --quiet
-sudo gcloud compute networks subnets delete $envname-subnet --project=$project --region=$region --quiet
-sudo gcloud compute networks delete $envname-vpc --project=$project --quiet
+gcloud compute vpn-tunnels delete $vpntunnelname --region $region --quiet
+gcloud compute routes delete $vpntunnelname-route-1 --quiet
+gcloud compute forwarding-rules delete $envname-vpn-rule-esp --region $region --quiet
+gcloud compute forwarding-rules delete $envname-vpn-rule-udp500 --region $region --quiet
+gcloud compute forwarding-rules delete $envname-vpn-rule-udp4500 --region $region --quiet
+gcloud compute target-vpn-gateways delete $envname-vpn --region $region --quiet
+gcloud compute addresses delete $envname-vpn-pip --region $region --quiet
+gcloud compute instances delete $envname-vm1 --project=$project --zone=$zone --quiet
+gcloud compute firewall-rules delete $envname-allow-traffic-from-azure --quiet
+gcloud compute networks subnets delete $envname-subnet --project=$project --region=$region --quiet
+gcloud compute networks delete $envname-vpc --project=$project --quiet
 ```
