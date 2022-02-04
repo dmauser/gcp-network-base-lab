@@ -58,6 +58,7 @@ gcloud compute routers create $envname-router --project=$project --region=$regio
 
 #DirectConnect with Connectivity Partner:
 gcloud compute interconnects attachments partner create $envname-vlan --region $region --edge-availability-domain availability-domain-1 --router $envname-router --admin-enabled
+
 ```
 
 2 - Get the pair key on the output above to setup connection with GCP interconnectivity partner. Example:
