@@ -63,6 +63,11 @@ gcloud compute interconnects attachments partner create $envname-vlan --region $
 
 2 - Get the pair key on the output above to setup connection with GCP interconnectivity partner. Example:
 
+```bash
+Please use the pairing key to provision the attachment with your partner:
+      890c4350-XXXX-YYYY-ZZZZ-db2b6de5768b/us-central1/1
+```
+
 ### VPN
 
 Note: the scope for this VPN gateway is classic (single instance) and uses static routing.
