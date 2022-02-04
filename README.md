@@ -57,7 +57,7 @@ For hybrid connectivity you have two options: Interconnect or VPN, or both depen
 gcloud compute routers create $envname-router --project=$project --region=$region --network=$envname-vpc --asn=16550
 
 #DirectConnect with Connectivity Partner:
-gcloud compute interconnects attachments partner create $envname-vlan --region $region --edge-availability-domain availability-domain-1 --router $envname-router --admin-enabled
+gcloud compute interconnects attachments partner create $envname-vlan --region $region --edge-availability-domain availability-domain-1 --router $envname-router --admin-enabled --project=$project
 
 ```
 
