@@ -2,20 +2,22 @@
 
 ## Introduction
 
-The intention of this based lab in GCP is to create a simple environment with a single VPC, an Ubuntu VM, Cloud Router for Interconnect, and VPN.
+This repo helps you build a simple Lab environment in GCP with a single VPC, an Ubuntu VM, Cloud Router for Interconnect, and VPN.
+
+You can use it for diverse scenarios like interconnecting with other cloud providers such as Azure or AWS, or by emulating an on-premises environment and testing interconnectivity with other remote networks. You pretty much can use and expand based on your creativity and needs. Enjoy it.
 
 ## Prerequisite
 
 You are required to use GCP CLI (gcloud) by using either of these two options:
 
-1) Commands either via [GCP cloud shell](https://shell.cloud.google.com)
-2) Install GCP CLI on your Windows or Linux machine by following instructions: [Installing the gcloud CLI](https://cloud.google.com/sdk/docs/install)
+1) Run commands using [GCP cloud shell](https://shell.cloud.google.com)
+2) Install GCP CLI (gcloud) on your Windows or Linux machine by following instructions: [Installing the gcloud CLI](https://cloud.google.com/sdk/docs/install)
 
 :point_right: Tip: When running on Linux elevate your shell to root (sudo -s).
 
 ## Lab steps
 
-1 - Define your variables. Change values below based on your needs:
+1 - Define your variables. Change the values below based on your needs:
 
 ```bash
 # Define your variables
@@ -42,7 +44,7 @@ gcloud compute firewall-rules create $envname-allow-traffic-from-azure --network
 gcloud compute instances create $envname-vm1 --project=$project --zone=$zone --machine-type=f1-micro --network-interface=subnet=$envname-subnet,network-tier=PREMIUM --image=ubuntu-1804-bionic-v20220126 --image-project=ubuntu-os-cloud --boot-disk-size=10GB --boot-disk-type=pd-balanced --boot-disk-device-name=$envname-vm1 
 ```
 
-## Hybrid Connectivity
+## Hybrid connectivity (Interconnect or VPN)
 
 For hybrid connectivity you have two options: Interconnect or VPN, or both depending on your needs.
 
@@ -104,3 +106,16 @@ gcloud compute vpn-tunnels describe $vpntunnelname \
 
 ## Clean up
 
+```bash
+sudo gcloud compute vpn-tunnels delete $vpntunnelname --region $region --quiet
+sudo gcloud compute routes delete $vpntunnelname-route-1 --quiet
+sudo gcloud compute forwarding-rules delete $envname-vpn-rule-esp --region $region --quiet
+sudo gcloud compute forwarding-rules delete $envname-vpn-rule-udp500 --region $region --quiet
+sudo gcloud compute forwarding-rules delete $envname-vpn-rule-udp4500 --region $region --quiet
+sudo gcloud compute target-vpn-gateways delete $envname-vpn --region $region --quiet
+sudo gcloud compute addresses delete $envname-vpn-pip --region $region --quiet
+sudo gcloud compute instances delete $envname-vm1 --project=$project --zone=$zone --quiet
+sudo gcloud compute firewall-rules delete $envname-allow-traffic-from-azure --quiet
+sudo gcloud compute networks subnets delete $envname-subnet --project=$project --region=$region --quiet
+sudo gcloud compute networks delete $envname-vpc --project=$project --quiet
+```
