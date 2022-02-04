@@ -113,15 +113,15 @@ gcloud compute vpn-tunnels describe $vpntunnelname \
 ## Clean up
 
 ```bash
-gcloud compute vpn-tunnels delete $vpntunnelname --region $region --quiet
-gcloud compute routes delete $vpntunnelname-route-1 --quiet
-gcloud compute forwarding-rules delete $envname-vpn-rule-esp --region $region --quiet
-gcloud compute forwarding-rules delete $envname-vpn-rule-udp500 --region $region --quiet
-gcloud compute forwarding-rules delete $envname-vpn-rule-udp4500 --region $region --quiet
-gcloud compute target-vpn-gateways delete $envname-vpn --region $region --quiet
-gcloud compute addresses delete $envname-vpn-pip --region $region --quiet
-gcloud compute instances delete $envname-vm1 --project=$project --zone=$zone --quiet
-gcloud compute firewall-rules delete $envname-allow-traffic-from-azure --quiet
+gcloud compute vpn-tunnels delete $vpntunnelname --region $region --project=$project  --quiet
+gcloud compute routes delete $vpntunnelname-route-1 --project=$project  --quiet
+gcloud compute forwarding-rules delete $envname-vpn-rule-esp --region $region --project=$project  --quiet
+gcloud compute forwarding-rules delete $envname-vpn-rule-udp500 --region $region --project=$project  --quiet
+gcloud compute forwarding-rules delete $envname-vpn-rule-udp4500 --region $region --project=$project  --quiet
+gcloud compute target-vpn-gateways delete $envname-vpn --region $region --project=$project --quiet
+gcloud compute addresses delete $envname-vpn-pip --region $region --project=$project --quiet
+gcloud compute instances delete $envname-vm1 --project=$project --project=$project --zone=$zone --quiet
+gcloud compute firewall-rules delete $envname-allow-traffic-from-azure --project=$project --quiet
 gcloud compute networks subnets delete $envname-subnet --project=$project --region=$region --quiet
 gcloud compute networks delete $envname-vpc --project=$project --quiet
 ```
