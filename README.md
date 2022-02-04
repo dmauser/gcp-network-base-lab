@@ -78,8 +78,8 @@ Note: the scope for this VPN gateway is classic (single instance) and uses stati
 gcloud compute target-vpn-gateways create $envname-vpn-gw --project=$project --region=$region --network=$envname-vpc 
 gcloud compute addresses create $envname-vpn-pip --project=$project --region=$region
 gcpvpnpip=$(gcloud compute addresses describe $envname-vpn-pip --region=$region --project=$project --format='value(address)')
-gcloud compute forwarding-rules create $envname-vpn-rule-esp --project=$project --region=$region --address=$gcpvpnpip --ip-protocol=ESP --target-vpn-gateway=$envname-vpn-gw-gw 
-gcloud compute forwarding-rules create $envname-vpn-rule-udp500 --project=$project --region=$region --address=$gcpvpnpip --ip-protocol=UDP --ports=500 --target-vpn-gateway=$envname-vpn-gw-gw 
+gcloud compute forwarding-rules create $envname-vpn-rule-esp --project=$project --region=$region --address=$gcpvpnpip --ip-protocol=ESP --target-vpn-gateway=$envname-vpn-gw 
+gcloud compute forwarding-rules create $envname-vpn-rule-udp500 --project=$project --region=$region --address=$gcpvpnpip --ip-protocol=UDP --ports=500 --target-vpn-gateway=$envname-vpn-gw 
 gcloud compute forwarding-rules create $envname-vpn-rule-udp4500 --project=$project --region=$region --address=$gcpvpnpip --ip-protocol=UDP --ports=4500 --target-vpn-gateway=$envname-vpn-gw
 ```
 
