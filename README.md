@@ -1,4 +1,4 @@
-# GCP Networking base lab
+# GCP Network base lab
 
 ## Introduction
 
