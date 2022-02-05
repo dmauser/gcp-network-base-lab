@@ -1,10 +1,23 @@
-# GCP base lab
+# GCP Networking base lab
 
 ## Introduction
 
 This repo helps you build a simple Lab environment in GCP with a single VPC, an Ubuntu VM, Cloud Router for Interconnect, and VPN.
 
 You can use it for diverse scenarios like interconnecting with other cloud providers such as Azure or AWS, or by emulating an on-premises environment and testing interconnectivity with other remote networks. You pretty much can use and expand based on your creativity and needs. Enjoy it.
+
+## Components
+
+The following components are created as part of this Lab:
+
+- VPN Network and subnet (default is 192.168.0.0/24)
+- Ubuntu VM 18.04
+- Cloud Router and Interconnect VLAN via Partner
+- VPN Gateway (classic) and single IKEv2 IPSec Tunnel
+
+:point_right: **Note:** you can either setup Cloud Router for the Interconnect or VPN connection or both.
+
+A shell script [deploy.sh](https://raw.githubusercontent.com/dmauser/gcp-base-lab/main/deploy.sh) has been available over this repo too with the same commands listed below.
 
 ## Prerequisite
 
@@ -13,7 +26,7 @@ You are required to use GCP CLI (gcloud) by using either of these two options:
 1) Run commands using [GCP cloud shell](https://shell.cloud.google.com)
 2) Install GCP CLI (gcloud) on your Windows or Linux machine by following instructions: [Installing the gcloud CLI](https://cloud.google.com/sdk/docs/install)
 
-:point_right: Tip: When running on Linux elevate your shell to root (sudo -s).
+:point_right: **Tip:** When running on Linux elevate your shell to root (sudo -s).
 
 ## Lab steps
 
