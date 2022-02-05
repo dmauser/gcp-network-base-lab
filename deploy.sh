@@ -100,12 +100,12 @@ gcloud compute addresses describe $envname-vpn-pip \
     --project=$project \
     --format='value(address)'
 
-# Create GCP VPN tunnel to the other side VPN device
 # Define Variables = Please add your custom values on the lines below
 sharedkey=@password@  #specify your own share key
 peervpnpip=1.1.1.1 #specify Peer VPN Public IP address
 destcidr=10.0.0.0/8 #specify remote VPN network to be reached.
 vpntunnelname=vpn-to-remote-site-a #specify the tunnel name, usually the remote site name.
+# Create GCP VPN tunnel to the other side VPN device
 
 gcloud compute vpn-tunnels create $vpntunnelname \
     --project=$project \
