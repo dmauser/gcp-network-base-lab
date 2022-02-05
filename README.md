@@ -17,7 +17,7 @@ The following components are created as part of this Lab:
 
 :point_right: **Note:** you can either setup Cloud Router for the Interconnect or VPN connection or both.
 
-A shell script [deploy.sh](https://raw.githubusercontent.com/dmauser/gcp-base-lab/main/deploy.sh) has been available over this repo too with the same commands listed below.
+A shell script [deploy.sh](https://raw.githubusercontent.com/dmauser/gcp-network-base-lab/main/deploy.sh) has been available over this repo too with the same commands listed below.
 
 ## Prerequisite
 
