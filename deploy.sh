@@ -130,7 +130,6 @@ gcloud compute vpn-tunnels describe $vpntunnelname \
     --project=$project \
     --format='flattened(status,detailedStatus)'
 
-
 # Clean up
 
 #Cloud Router and Interconnect (VLAN)
