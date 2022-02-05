@@ -129,3 +129,25 @@ gcloud compute vpn-tunnels describe $vpntunnelname \
     --region=$region \
     --project=$project \
     --format='flattened(status,detailedStatus)'
+
+
+# Clean up
+
+#Cloud Router and Interconnect (VLAN)
+gcloud compute interconnects attachments delete $envname-vlan --region $region --project=$project --quiet
+gcloud compute routers delete $envname-router --project=$project --region=$region --project=$project  --quiet
+
+#VPN tunnel and Gateway
+gcloud compute vpn-tunnels delete $vpntunnelname --region $region --project=$project  --quiet
+gcloud compute routes delete $vpntunnelname-route-1 --project=$project  --quiet
+gcloud compute forwarding-rules delete $envname-vpn-rule-esp --region $region --project=$project  --quiet
+gcloud compute forwarding-rules delete $envname-vpn-rule-udp500 --region $region --project=$project  --quiet
+gcloud compute forwarding-rules delete $envname-vpn-rule-udp4500 --region $region --project=$project  --quiet
+gcloud compute target-vpn-gateways delete $envname-vpn-gw --region $region --project=$project --quiet
+gcloud compute addresses delete $envname-vpn-pip --region $region --project=$project --quiet
+
+# VM Firewall Rules and VPN
+gcloud compute instances delete $envname-vm1 --project=$project --project=$project --zone=$zone --quiet
+gcloud compute firewall-rules delete $envname-allow-traffic-from-azure --project=$project --quiet
+gcloud compute networks subnets delete $envname-subnet --project=$project --region=$region --quiet
+gcloud compute networks delete $envname-vpc --project=$project --quiet
