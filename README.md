@@ -13,7 +13,7 @@ You are required to use GCP CLI (gcloud) by using either of these two options:
 1) Run commands using [GCP cloud shell](https://shell.cloud.google.com)
 2) Install GCP CLI (gcloud) on your Windows or Linux machine by following instructions: [Installing the gcloud CLI](https://cloud.google.com/sdk/docs/install)
 
-:point_right: Tip: When running on Linux elevate your shell to root (-s).
+:point_right: Tip: When running on Linux elevate your shell to root (sudo -s).
 
 ## Lab steps
 
@@ -28,6 +28,9 @@ vpcrange=192.168.0.0/24 # Set VPN CIDR
 envname=onprem #Enviroment Name you want to create
 vmname=vm1 #VM Name
 mypip=$(curl -4 ifconfig.io -s) #Gets your Home Public IP or replace with that information. It will add it to the Firewall Rule for remote access to your VM.
+
+#Set default project
+gcloud config set project $project
 ```
 
 2 - Create VPC, Firewall Rules and creates Ubuntu VM
@@ -35,14 +38,12 @@ mypip=$(curl -4 ifconfig.io -s) #Gets your Home Public IP or replace with that i
 ```bash
 #Create VPC
 gcloud compute networks create $envname-vpc \
-    --project=$project \
     --subnet-mode=custom \
     --mtu=1460 \
     --bgp-routing-mode=regional
 
 #Create VPC Subnet
 gcloud compute networks subnets create $envname-subnet \
-    --project=$project \
     --range=$vpcrange \
     --network=$envname-vpc \
     --region=$region
@@ -51,12 +52,10 @@ gcloud compute networks subnets create $envname-subnet \
 gcloud compute firewall-rules create $envname-allow-traffic-from-azure \
     --network $envname-vpc \
     --allow tcp,udp,icmp \
-    --source-ranges 192.168.0.0/16,10.0.0.0/8,172.16.0.0/16,35.235.240.0/20,$mypip/32 \
-    --project=$project
+    --source-ranges 192.168.0.0/16,10.0.0.0/8,172.16.0.0/16,35.235.240.0/20,$mypip/32
 
 #Create Unbutu VM:
 gcloud compute instances create $envname-vm1 \
-    --project=$project \
     --zone=$zone \
     --machine-type=f1-micro \
     --network-interface=subnet=$envname-subnet,network-tier=PREMIUM \
@@ -78,7 +77,6 @@ For hybrid connectivity you have two options: Interconnect or VPN, or both depen
 ```bash
 #Cloud Router:
 gcloud compute routers create $envname-router \
-    --project=$project \
     --region=$region \
     --network=$envname-vpc \
     --asn=16550
@@ -88,8 +86,7 @@ gcloud compute interconnects attachments partner create $envname-vlan \
     --region $region \
     --edge-availability-domain availability-domain-1 \
     --router $envname-router \
-    --admin-enabled \
-    --project=$project
+    --admin-enabled
 ```
 
 2 - Get the pair key on the output above to setup connection with GCP interconnectivity partner. Example:
@@ -108,33 +105,28 @@ Note: the scope for this VPN gateway is classic (single instance) and uses stati
 ```bash
 # Creating VPN Gateway and forwarding rules for IPSec (ESP,IKE and NAT-T)
 gcloud compute target-vpn-gateways create $envname-vpn-gw \
-    --project=$project \
     --region=$region \
     --network=$envname-vpc
 
 gcloud compute addresses create $envname-vpn-pip \
-    --project=$project \
     --region=$region
 
 # Gateway Public IP as variable
-gcpvpnpip=$(gcloud compute addresses describe $envname-vpn-pip --region=$region --project=$project --format='value(address)')
+gcpvpnpip=$(gcloud compute addresses describe $envname-vpn-pip --region=$region  --format='value(address)')
 
 # Forward Rules
 gcloud compute forwarding-rules create $envname-vpn-rule-esp \
-    --project=$project \
     --region=$region \
     --address=$gcpvpnpip \
     --ip-protocol=ESP \
     --target-vpn-gateway=$envname-vpn-gw 
 gcloud compute forwarding-rules create $envname-vpn-rule-udp500 \
-    --project=$project \
     --region=$region \
     --address=$gcpvpnpip \
     --ip-protocol=UDP \
     --ports=500 \
     --target-vpn-gateway=$envname-vpn-gw 
 gcloud compute forwarding-rules create $envname-vpn-rule-udp4500 \
-    --project=$project \
     --region=$region \
     --address=$gcpvpnpip \
     --ip-protocol=UDP \
@@ -145,7 +137,7 @@ gcloud compute forwarding-rules create $envname-vpn-rule-udp4500 \
 2 - Get VPN Public IP information to be configured in the other VPN device side:
 
 ```bash
-gcloud compute addresses describe $envname-vpn-pip --region=$region --project=$project --format='value(address)'
+gcloud compute addresses describe $envname-vpn-pip --region=$region --format='value(address)'
 ```
 
 3) Create GCP VPN tunnel to the other side VPN device
@@ -158,7 +150,6 @@ destcidr=10.0.0.0/8 #specify remote VPN network to be reached.
 vpntunnelname=vpn-to-remote-site-a #specify the tunnel name, usually the remote site name.
 # Create GCP VPN tunnel to the other side VPN device
 gcloud compute vpn-tunnels create $vpntunnelname \
-    --project=$project \
     --region=$region \
     --peer-address=$peervpnpip \
     --shared-secret=$sharedkey \
@@ -167,7 +158,6 @@ gcloud compute vpn-tunnels create $vpntunnelname \
     --remote-traffic-selector=0.0.0.0/0 \
     --target-vpn-gateway=$envname-vpn-gw 
 gcloud compute routes create $vpntunnelname-route-1 \
-    --project=$project \
     --network=$envname-vpc \
     --priority=1000 \
     --destination-range=$destcidr \
@@ -180,7 +170,6 @@ gcloud compute routes create $vpntunnelname-route-1 \
 ```bash
 gcloud compute vpn-tunnels describe $vpntunnelname \
    --region=$region \
-   --project=$project \
    --format='flattened(status,detailedStatus)'
 ```
 
@@ -188,21 +177,21 @@ gcloud compute vpn-tunnels describe $vpntunnelname \
 
 ```bash
 #Cloud Router and Interconnect (VLAN)
-gcloud compute interconnects attachments delete $envname-vlan --region $region --project=$project --quiet
-gcloud compute routers delete $envname-router --project=$project --region=$region --project=$project  --quiet
+gcloud compute interconnects attachments delete $envname-vlan --region $region --quiet
+gcloud compute routers delete $envname-router  --region=$region --quiet
 
 #VPN tunnel and Gateway
-gcloud compute vpn-tunnels delete $vpntunnelname --region $region --project=$project  --quiet
-gcloud compute routes delete $vpntunnelname-route-1 --project=$project  --quiet
-gcloud compute forwarding-rules delete $envname-vpn-rule-esp --region $region --project=$project  --quiet
-gcloud compute forwarding-rules delete $envname-vpn-rule-udp500 --region $region --project=$project  --quiet
-gcloud compute forwarding-rules delete $envname-vpn-rule-udp4500 --region $region --project=$project  --quiet
-gcloud compute target-vpn-gateways delete $envname-vpn-gw --region $region --project=$project --quiet
-gcloud compute addresses delete $envname-vpn-pip --region $region --project=$project --quiet
+gcloud compute vpn-tunnels delete $vpntunnelname --region $region --quiet
+gcloud compute routes delete $vpntunnelname-route-1 --quiet
+gcloud compute forwarding-rules delete $envname-vpn-rule-esp --region $region --quiet
+gcloud compute forwarding-rules delete $envname-vpn-rule-udp500 --region $region --quiet
+gcloud compute forwarding-rules delete $envname-vpn-rule-udp4500 --region $region --quiet
+gcloud compute target-vpn-gateways delete $envname-vpn-gw --region $region --quiet
+gcloud compute addresses delete $envname-vpn-pip --region $region --quiet
 
 # VM Instance and Firewall Rules
-gcloud compute instances delete $envname-vm1 --project=$project --project=$project --zone=$zone --quiet
-gcloud compute firewall-rules delete $envname-allow-traffic-from-azure --project=$project --quiet
-gcloud compute networks subnets delete $envname-subnet --project=$project --region=$region --quiet
-gcloud compute networks delete $envname-vpc --project=$project --quiet
+gcloud compute instances delete $envname-vm1   --zone=$zone --quiet
+gcloud compute firewall-rules delete $envname-allow-traffic-from-azure --quiet
+gcloud compute networks subnets delete $envname-subnet  --region=$region --quiet
+gcloud compute networks delete $envname-vpc --quiet
 ```
