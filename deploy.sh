@@ -7,6 +7,7 @@ vpcrange=192.168.0.0/24 # Set VPN CIDR
 envname=onprem #Enviroment Name you want to create
 vmname=vm1 #VM Name
 mypip=$(curl -4 ifconfig.io -s) #Gets your Home Public IP or replace with that information. It will add it to the Firewall Rule for remote access to your VM.
+
 # Define Variables below for VPN deployments only
 sharedkey=@password@  #specify your own share key
 peervpnpip=1.1.1.1 #specify Peer VPN Public IP address
